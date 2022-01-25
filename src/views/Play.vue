@@ -21,8 +21,11 @@
     </div>
   </div>
   <div class="c-play">
-    <div class="c-countdown" v-if="countdownTime > 0">
-      {{ countdownTime }}
+    <div class="c-countdown-wrapper" v-if="countdownTime > 0">
+      <h5 class="text-white fw-bold mb-4">Game will start in</h5>
+      <div class="c-countdown">
+        {{ countdownTime }}
+      </div>
     </div>
     <div v-if="isPlaying">
       <div class="c-question">
@@ -67,7 +70,7 @@ export default {
   setup(props, { emit }) {
     const score = ref(0);
     const countdown = ref(null);
-    const countdownTime = ref(3);
+    const countdownTime = ref(5);
 
     const isPlaying = ref(false);
     const firstNumber = ref(0);
@@ -91,6 +94,7 @@ export default {
     };
 
     const handleFinished = () => {
+      isPlaying.value = false;
       emit("finished", score.value);
     };
 
@@ -164,9 +168,12 @@ export default {
 </script>
 
 <style scoped>
+.c-countdown-wrapper {
+  margin-top: 5rem;
+}
 .c-countdown {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   background: #50b1f5;
   color: white;
   border-radius: 50%;
@@ -175,7 +182,6 @@ export default {
   justify-content: center;
   font-size: 56px;
   font-weight: bold;
-  margin-top: 5rem;
 }
 
 .c-question {

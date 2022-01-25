@@ -3,7 +3,7 @@
           {
                "id" : 1,
                "name" : "Beginner",
-               "play_time" : 1,
+               "play_time" : 120,
                "round_time" : 32,
                "correct_score" : 4,
                "incorrect_score" : 1

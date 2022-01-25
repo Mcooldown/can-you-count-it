@@ -1,21 +1,23 @@
 <template>
-  <div class="c-background">
-    <div class="container-fluid">
-      <Home v-if="step === 1" @finished="handleSelectLevel" />
-      <Level v-else-if="step === 2" :name="name" @finished="handlePlay" />
-      <Play
-        v-else-if="step === 3"
-        :name="name"
-        :level="level"
-        @finished="handleResult"
-      />
-      <Result
-        v-else-if="step === 4"
-        :name="name"
-        :level="level"
-        :score="score"
-        @playAgain="handlePlayAgain"
-      />
+  <div class="c-bg-black">
+    <div class="c-background" id="background">
+      <div class="container-fluid">
+        <Home v-if="step === 1" @finished="handleSelectLevel" />
+        <Level v-else-if="step === 2" :name="name" @finished="handlePlay" />
+        <Play
+          v-else-if="step === 3"
+          :name="name"
+          :level="level"
+          @finished="handleResult"
+        />
+        <Result
+          v-else-if="step === 4"
+          :name="name"
+          :level="level"
+          :score="score"
+          @playAgain="handlePlayAgain"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -36,19 +38,29 @@ export default {
     const level = ref(null);
     const score = ref(0);
 
+    const goToStep = (stepParam) => {
+      let background = document.getElementById("background");
+      background.style.opacity = 0;
+
+      setTimeout(() => {
+        step.value = stepParam;
+        background.style.opacity = 1;
+      }, 1000);
+    };
+
     const handlePlay = (levelParam) => {
       level.value = levelParam;
-      step.value = 3;
+      goToStep(3);
     };
 
     const handleResult = (scoreParam) => {
       score.value = scoreParam;
-      step.value = 4;
+      goToStep(4);
     };
 
     const handleSelectLevel = (nameParam) => {
       name.value = nameParam;
-      step.value = 2;
+      goToStep(2);
     };
 
     const handlePlayAgain = (stepParam) => {
@@ -56,7 +68,7 @@ export default {
         name.value = null;
       }
       level.value = null;
-      step.value = stepParam;
+      goToStep(stepParam);
     };
 
     return {
@@ -81,5 +93,9 @@ body {
 .c-background {
   background: url("../assets/background.png") center center repeat;
   min-height: 100vh;
+  transition: 500ms ease-in;
+}
+.c-bg-black {
+  background: black;
 }
 </style>
