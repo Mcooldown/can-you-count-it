@@ -1,11 +1,18 @@
 <template>
   <div class="c-background">
     <div class="container-fluid">
-      <Home v-if="step === 1" @finished="handlePlay" />
-      <Play v-if="step === 2" :name="name" @finished="handleResult" />
-      <Result
-        v-if="step === 3"
+      <Home v-if="step === 1" @finished="handleSelectLevel" />
+      <Level v-else-if="step === 2" :name="name" @finished="handlePlay" />
+      <Play
+        v-else-if="step === 3"
         :name="name"
+        :level="level"
+        @finished="handleResult"
+      />
+      <Result
+        v-else-if="step === 4"
+        :name="name"
+        :level="level"
         :score="score"
         @playAgain="handlePlayAgain"
       />
@@ -15,33 +22,53 @@
 
 <script>
 import Home from "./Home.vue";
+import Level from "./Level.vue";
 import Play from "./Play.vue";
 import Result from "./Result.vue";
 import { ref } from "vue";
 
 export default {
   name: "Main",
-  components: { Home, Play, Result },
+  components: { Home, Level, Play, Result },
   setup() {
     const step = ref(1);
     const name = ref(null);
+    const level = ref(null);
     const score = ref(0);
 
-    const handlePlay = (nameParam) => {
-      name.value = nameParam;
-      step.value = 2;
+    const handlePlay = (levelParam) => {
+      level.value = levelParam;
+      step.value = 3;
     };
 
     const handleResult = (scoreParam) => {
       score.value = scoreParam;
-      step.value = 3;
+      step.value = 4;
     };
 
-    const handlePlayAgain = () => {
+    const handleSelectLevel = (nameParam) => {
+      name.value = nameParam;
       step.value = 2;
     };
 
-    return { step, name, handlePlay, handleResult, score, handlePlayAgain };
+    const handlePlayAgain = (stepParam) => {
+      if (stepParam === 1) {
+        name.value = null;
+      }
+      level.value = null;
+      step.value = stepParam;
+    };
+
+    return {
+      step,
+      name,
+      handlePlay,
+      handleResult,
+      score,
+      handleSelectLevel,
+      level,
+      handlePlayAgain,
+    };
   },
 };
 </script>

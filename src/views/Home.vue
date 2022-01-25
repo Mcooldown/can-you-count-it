@@ -1,4 +1,7 @@
 <template>
+  <div class="text-end pt-3">
+    <Button title="LEADERBOARD" icon="fas fa-trophy" />
+  </div>
   <div class="c-home">
     <div class="row justify-content-center align-items-center">
       <div class="col-md-4">
@@ -16,22 +19,26 @@
             placeholder="Input Your Name"
           />
           <h6 v-if="errorName" class="c-error-input">{{ errorName }}</h6>
-          <Button title="PLAY" />
+          <div class="d-flex justify-content-center mt-4">
+            <Button type="submit" title="PLAY" icon="fas fa-play" />
+          </div>
+          <h6 class="c-how-to-play mt-4">How to Play?</h6>
         </form>
       </div>
     </div>
-    <div class="d-flex justify-content-center c-form"></div>
+    <Copyright />
   </div>
 </template>
 
 <script>
 import { ref, watch } from "vue";
 import Button from "../components/Button.vue";
+import Copyright from "../components/Copyright.vue";
 
 export default {
   name: "Home",
   emits: ["finished"],
-  components: { Button },
+  components: { Button, Copyright },
   setup(_, { emit }) {
     const name = ref("");
     const errorName = ref(null);
@@ -55,10 +62,10 @@ export default {
 
 <style scoped>
 .c-home {
-  padding-top: 15rem;
+  padding-top: 5rem;
 }
 .c-form {
-  margin-top: 5rem;
+  margin-top: 4rem;
 }
 
 .c-input {
@@ -71,5 +78,13 @@ export default {
 .c-error-input {
   color: red;
   margin-top: 1rem;
+}
+
+.c-how-to-play {
+  cursor: pointer;
+  color: #f6d55c;
+}
+.c-how-to-play:hover {
+  color: #fff0bb;
 }
 </style>

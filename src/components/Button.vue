@@ -1,26 +1,30 @@
 <template>
-  <button class="btn c-btn">{{ title }}</button>
+  <button class="btn c-btn">
+    <div class="d-inline-flex">
+      <i :class="icon"></i>
+      <h6 class="text-white mb-0 ms-2 fw-bold">
+        {{ title ? title : "" }}
+      </h6>
+    </div>
+  </button>
 </template>
 
 <script>
 export default {
-  props: ["title"],
+  props: ["title", "icon"],
 };
 </script>
 
 <style scoped>
 .c-btn {
   background: #50b1f5;
-  margin-top: 2rem;
-  padding: 10px 40px;
-  color: #054d80;
+  padding: 8px 32px;
+  color: white;
   border-radius: 50px;
   transition: 500ms ease all;
-  font-weight: bold;
 }
 
 .c-btn:hover {
-  background: #054d80;
-  color: white;
+  background: #2d658d;
 }
 </style>

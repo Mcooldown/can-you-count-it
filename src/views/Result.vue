@@ -8,18 +8,36 @@
       <div class="col-md-6">
         <div class="c-result-box">
           <h1 class="c-time-up">Time's Up</h1>
-          <h2 class="text-white mt-4">
-            Congratulations, <span class="fw-bold c-text-blue">{{ name }}</span>
-          </h2>
-          <h2 class="mt-3 text-white">
-            You've got <span class="fw-bold c-text-blue">{{ score }}</span> as
-            your total score!
-          </h2>
+          <h4 class="text-white mt-4">
+            Congratulations, <span class="fw-bold c-text-blue">{{ name }}</span
+            >!
+          </h4>
+          <h4 class="mt-3 text-white">
+            You've got
+            <span class="fw-bold c-text-blue">{{ score }}</span> point(s) as
+            your total score on
+            <span class="fw-bold c-text-blue">{{ level.name }}</span> level.
+          </h4>
         </div>
-        <div class="d-flex justify-content-center">
-          <Button title="PLAY AGAIN" @click="handlePlayAgain" />
-          <div class="me-4"></div>
-          <Button title="LEADERBOARD" @click="handleLeaderboard" />
+        <div class="mt-4">
+          <Button
+            title="PLAY AGAIN"
+            icon="fas fa-play"
+            @click="handlePlayAgain(2)"
+            class="me-3 my-2"
+          />
+          <Button
+            title="HOME"
+            class="me-3 my-2"
+            icon="fa fa-home"
+            @click="handlePlayAgain(1)"
+          />
+          <Button
+            title="LEADERBOARD"
+            class="my-2"
+            icon="fas fa-trophy"
+            @click="handleLeaderboard"
+          />
         </div>
       </div>
     </div>
@@ -32,15 +50,18 @@ import Button from "../components/Button.vue";
 export default {
   components: { Button },
   emits: ["playAgain"],
-  props: ["score", "name"],
+  props: ["score", "name", "level"],
   setup(_, { emit }) {
-    const handlePlayAgain = () => {
-      emit("playAgain");
+    const handlePlayAgain = (step) => {
+      emit("playAgain", step);
     };
 
     const handleLeaderboard = () => {};
 
-    return { handlePlayAgain, handleLeaderboard };
+    return {
+      handlePlayAgain,
+      handleLeaderboard,
+    };
   },
 };
 </script>
@@ -53,7 +74,7 @@ export default {
 .c-time-up {
   color: #f6d55c;
   font-weight: bold;
-  font-size: 72px;
+  font-size: 56px;
 }
 
 .c-result-box {

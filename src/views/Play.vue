@@ -1,23 +1,23 @@
 <template>
   <div class="c-top row justify-content-between" v-if="countdownTime <= 0">
     <div class="col-md-4 order-1 order-md-1 text-center text-md-start my-2">
-      <h4 class="text-white">
-        Current Player: <span class="c-text-yellow fw-bold">{{ name }}</span>
+      <h5 class="text-white">
+        Player Name: <span class="c-text-yellow fw-bold">{{ name }}</span>
         <br />
-        Level: <span class="c-text-yellow fw-bold">Intermediate</span>
-      </h4>
+        Level: <span class="c-text-yellow fw-bold">{{ level.name }}</span>
+      </h5>
     </div>
     <div class="col-md-4 order-3 order-md-2 text-center my-2">
-      <h4 class="text-white">
+      <h5 class="text-white">
         Remaining Time:
         <span class="text-danger fw-bold">{{ playTime }} seconds</span>
-      </h4>
+      </h5>
     </div>
     <div class="col-md-4 order-2 order-md-3 text-center text-md-end my-2">
-      <h4 class="text-white">
+      <h5 class="text-white">
         Total Score: <br />
-        <span class="c-text-blue fw-bold">{{ score }}</span>
-      </h4>
+        <span class="c-text-blue fw-bold">{{ score }} Points</span>
+      </h5>
     </div>
   </div>
   <div class="c-play">
@@ -25,39 +25,46 @@
       {{ countdownTime }}
     </div>
     <div v-if="isPlaying">
-      <h1 class="c-number c-text-yellow">{{ thirdNumber }}</h1>
       <div class="c-question">
         <h1 class="c-number">{{ firstNumber }}</h1>
-        <h1 class="text-white mx-4">+</h1>
+        <h1 class="mx-4">+</h1>
         <h1 class="c-number">{{ secondNumber }}</h1>
+        <h1 class="mx-4">+</h1>
+        <div class="position-relative">
+          <h1 class="c-number c-text-yellow position-relative">
+            {{ thirdNumber }}
+          </h1>
+          <span class="position-absolute badge rounded-pill bg-danger">
+            {{ roundTime }}
+          </span>
+        </div>
       </div>
       <div class="c-answer">
         <div class="row justify-content-center">
-          <div class="col-md-8">
+          <div class="col-md-6">
             <div class="row justify-content-center">
-              <div
-                class="col-md-4 my-3"
-                v-for="answer in answers"
-                :key="answer"
-              >
-                <div class="c-answer-box" @click="handleClick(answer)">
-                  <h1>{{ answer }}</h1>
+              <div class="col-4 my-3" v-for="answer in answers" :key="answer">
+                <div class="c-answer-box py-3" @click="handleClick(answer)">
+                  <h2 class="m-0">{{ answer }}</h2>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <Copyright />
     </div>
   </div>
 </template>
 
 <script>
 import { onMounted, ref } from "vue";
+import Copyright from "../components/Copyright.vue";
 export default {
-  props: ["name"],
+  components: { Copyright },
+  props: ["name", "level"],
   emits: ["finished"],
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const score = ref(0);
     const countdown = ref(null);
     const countdownTime = ref(3);
@@ -67,8 +74,8 @@ export default {
     const secondNumber = ref(0);
     const thirdNumber = ref(0);
     const timer = ref(null);
-    const playTime = ref(0);
-    const roundTime = ref(15);
+    const playTime = ref(props.level.play_time);
+    const roundTime = ref(props.level.round_time);
     const answers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
     const handleCountdown = () => {
@@ -84,7 +91,6 @@ export default {
     };
 
     const handleFinished = () => {
-      console.log(score.value);
       emit("finished", score.value);
     };
 
@@ -100,7 +106,6 @@ export default {
     const startPlay = () => {
       randomPairNumber();
       randomThirdNumber();
-      playTime.value = 10;
       isPlaying.value = true;
 
       timer.value = setInterval(() => {
@@ -109,9 +114,8 @@ export default {
             roundTime.value--;
           }
           if (roundTime.value <= 0) {
-            randomPairNumber();
             randomThirdNumber();
-            roundTime.value += 15;
+            roundTime.value += props.level.round_time;
           }
           playTime.value--;
         }
@@ -126,9 +130,15 @@ export default {
       const correctAnswer =
         (firstNumber.value + secondNumber.value + thirdNumber.value) % 10;
       if (answer === correctAnswer) {
-        score.value += 10;
+        score.value += props.level.correct_score;
       } else {
-        if (score.value > 0) score.value -= 5;
+        if (score.value > 0) {
+          if (score.value - props.level.incorrect_score < 0) {
+            score.value = 0;
+          } else {
+            score.value -= props.level.incorrect_score;
+          }
+        }
       }
       randomPairNumber();
     };
@@ -147,6 +157,7 @@ export default {
       isPlaying,
       answers,
       handleClick,
+      roundTime,
     };
   },
 };
@@ -164,6 +175,7 @@ export default {
   justify-content: center;
   font-size: 56px;
   font-weight: bold;
+  margin-top: 5rem;
 }
 
 .c-question {
@@ -175,15 +187,15 @@ export default {
 .c-number {
   color: #50b1f5;
   font-weight: bold;
-  font-size: 72px;
+  font-size: 56px;
 }
 
 .c-play {
-  padding-top: 3rem;
+  padding-top: 1rem;
 }
 
 .c-top {
-  padding-top: 1rem;
+  padding-top: 0.25rem;
 }
 
 .c-answer {
@@ -196,10 +208,15 @@ export default {
   font-weight: bold;
   cursor: pointer;
   border-radius: 10px;
-  padding: 1.25rem 0;
 }
 
 .c-answer-box:hover {
-  box-shadow: 0px 0px 1px 1px rgb(192, 192, 192);
+  box-shadow: 0px 0px 1px 1px rgb(139, 139, 139);
+}
+
+.badge {
+  top: 0;
+  right: -35px;
+  padding: 5px 10px;
 }
 </style>
