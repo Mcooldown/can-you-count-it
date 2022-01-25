@@ -2,8 +2,8 @@
   <button class="btn c-btn">
     <div class="d-inline-flex">
       <i :class="icon"></i>
-      <h6 class="text-white mb-0 ms-2 fw-bold">
-        {{ title ? title : "" }}
+      <h6 class="text-white mb-0 ms-2 fw-bold" v-if="title">
+        {{ title }}
       </h6>
     </div>
   </button>

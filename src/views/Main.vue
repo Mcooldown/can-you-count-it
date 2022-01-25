@@ -3,19 +3,25 @@
     <div class="c-background" id="background">
       <div class="container-fluid">
         <Home v-if="step === 1" @finished="handleSelectLevel" />
-        <Level v-else-if="step === 2" :name="name" @finished="handlePlay" />
+        <Level
+          v-else-if="step === 2"
+          :name="name"
+          @finished="handlePlay"
+          @goToHome="goToStep"
+        />
         <Play
           v-else-if="step === 3"
           :name="name"
           :level="level"
           @finished="handleResult"
+          @goToLevel="goToStep"
         />
         <Result
           v-else-if="step === 4"
           :name="name"
           :level="level"
           :score="score"
-          @playAgain="handlePlayAgain"
+          @playAgain="goToStep"
         />
       </div>
     </div>
@@ -63,14 +69,6 @@ export default {
       goToStep(2);
     };
 
-    const handlePlayAgain = (stepParam) => {
-      if (stepParam === 1) {
-        name.value = null;
-      }
-      level.value = null;
-      goToStep(stepParam);
-    };
-
     return {
       step,
       name,
@@ -79,7 +77,7 @@ export default {
       score,
       handleSelectLevel,
       level,
-      handlePlayAgain,
+      goToStep,
     };
   },
 };

@@ -1,34 +1,31 @@
 <template>
-  <div class="c-top row justify-content-between" v-if="countdownTime <= 0">
-    <div class="col-md-4 order-1 order-md-1 text-center text-md-start my-2">
-      <h5 class="text-white">
+  <div class="pt-3" v-if="countdownTime <= 0">
+    <div class="text-end mb-5">
+      <Button icon="fas fa-sign-out-alt" @click="goToLevel" />
+    </div>
+    <h5 class="text-white mb-4">
+      Remaining Time:
+      <span class="text-danger fw-bold">{{ playTime }} seconds</span>
+    </h5>
+    <h5 class="text-white">
+      Total Score: <br />
+      <span class="c-text-yellow fw-bold">{{ score }} Points</span>
+    </h5>
+  </div>
+  <div class="pt-3">
+    <div class="c-countdown-wrapper" v-if="countdownTime > 0">
+      <h5 class="text-white mb-5">
         Player Name: <span class="c-text-yellow fw-bold">{{ name }}</span>
         <br />
         Level: <span class="c-text-yellow fw-bold">{{ level.name }}</span>
       </h5>
-    </div>
-    <div class="col-md-4 order-3 order-md-2 text-center my-2">
-      <h5 class="text-white">
-        Remaining Time:
-        <span class="text-danger fw-bold">{{ playTime }} seconds</span>
-      </h5>
-    </div>
-    <div class="col-md-4 order-2 order-md-3 text-center text-md-end my-2">
-      <h5 class="text-white">
-        Total Score: <br />
-        <span class="c-text-blue fw-bold">{{ score }} Points</span>
-      </h5>
-    </div>
-  </div>
-  <div class="c-play">
-    <div class="c-countdown-wrapper" v-if="countdownTime > 0">
-      <h5 class="text-white fw-bold mb-4">Game will start in</h5>
+      <p class="text-white fw-bold mb-4">Game will start in</p>
       <div class="c-countdown">
         {{ countdownTime }}
       </div>
     </div>
     <div v-if="isPlaying">
-      <div class="c-question">
+      <div class="d-flex justify-content-center align-items-center mt-4">
         <h1 class="c-number">{{ firstNumber }}</h1>
         <h1 class="mx-4">+</h1>
         <h1 class="c-number">{{ secondNumber }}</h1>
@@ -48,7 +45,7 @@
             <div class="row justify-content-center">
               <div class="col-4 my-3" v-for="answer in answers" :key="answer">
                 <div class="c-answer-box py-3" @click="handleClick(answer)">
-                  <h2 class="m-0">{{ answer }}</h2>
+                  <h2 class="m-0 fw-bold">{{ answer }}</h2>
                 </div>
               </div>
             </div>
@@ -63,10 +60,12 @@
 <script>
 import { onMounted, ref } from "vue";
 import Copyright from "../components/Copyright.vue";
+import Button from "../components/Button.vue";
+
 export default {
-  components: { Copyright },
+  components: { Copyright, Button },
   props: ["name", "level"],
-  emits: ["finished"],
+  emits: ["finished", "goToLevel"],
   setup(props, { emit }) {
     const score = ref(0);
     const countdown = ref(null);
@@ -91,6 +90,10 @@ export default {
           startPlay();
         }
       }, 1000);
+    };
+
+    const goToLevel = () => {
+      emit("goToLevel", 2);
     };
 
     const handleFinished = () => {
@@ -162,6 +165,7 @@ export default {
       answers,
       handleClick,
       roundTime,
+      goToLevel,
     };
   },
 };
@@ -172,8 +176,8 @@ export default {
   margin-top: 5rem;
 }
 .c-countdown {
-  width: 100px;
-  height: 100px;
+  width: 6rem;
+  height: 6rem;
   background: #50b1f5;
   color: white;
   border-radius: 50%;
@@ -184,28 +188,10 @@ export default {
   font-weight: bold;
 }
 
-.c-question {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .c-number {
   color: #50b1f5;
   font-weight: bold;
   font-size: 56px;
-}
-
-.c-play {
-  padding-top: 1rem;
-}
-
-.c-top {
-  padding-top: 0.25rem;
-}
-
-.c-answer {
-  padding-top: 2rem;
 }
 
 .c-answer-box {

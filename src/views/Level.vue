@@ -1,18 +1,13 @@
 <template>
-  <div class="d-md-flex justify-content-between pt-2">
-    <img
-      src="../assets/can-you-count-it-logo.png"
-      height="40"
-      class="my-2"
-      alt=""
-    />
-    <h5 class="text-white my-2">
-      Player Name: <span class="c-text-yellow fw-bold">{{ name }}</span>
-    </h5>
-  </div>
-  <h1 class="c-title c-text-blue">Select your Level</h1>
   <div class="row justify-content-center">
-    <div class="col-md-8">
+    <div class="col-lg-8 col-md-10 col-11">
+      <h1 class="fw-bold c-text-yellow mt-5">Select your Level</h1>
+      <Button
+        class="mt-4"
+        title="BACK TO HOME"
+        icon="fas fa-home"
+        @click="goToHome"
+      />
       <div class="row justify-content-center mt-4">
         <div
           class="col-md-6 my-3"
@@ -59,11 +54,12 @@
 <script>
 import levelData from "../data/levels.json";
 import Copyright from "../components/Copyright.vue";
+import Button from "../components/Button.vue";
 
 export default {
-  components: { Copyright },
+  components: { Copyright, Button },
   props: ["name"],
-  emits: ["finished"],
+  emits: ["finished", "goToHome"],
   setup(_, { emit }) {
     const levels = levelData.levels;
 
@@ -71,18 +67,16 @@ export default {
       emit("finished", level);
     };
 
-    return { levels, handleFinished };
+    const goToHome = () => {
+      emit("goToHome", 1);
+    };
+
+    return { levels, handleFinished, goToHome };
   },
 };
 </script>
 
 <style scoped>
-.c-title {
-  font-size: 48px;
-  font-weight: bold;
-  margin-top: 3rem;
-}
-
 .c-level-box {
   background: rgb(63, 63, 63);
   border-radius: 20px;

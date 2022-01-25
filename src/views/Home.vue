@@ -4,11 +4,11 @@
   </div>
   <div class="c-home">
     <div class="row justify-content-center align-items-center">
-      <div class="col-md-4">
+      <div class="col-lg-4 col-md-6 col-11 my-4">
         <img src="../assets/can-you-count-it-logo.png" class="w-100" alt="" />
       </div>
       <div class="col-12"></div>
-      <div class="col-md-3">
+      <div class="col-lg-2 col-md-4 col-10 my-4">
         <form @submit.prevent="handleSubmit" class="c-form">
           <input
             type="text"
@@ -64,13 +64,10 @@ export default {
 .c-home {
   padding-top: 5rem;
 }
-.c-form {
-  margin-top: 4rem;
-}
 
 .c-input {
   background: rgb(63, 63, 63);
-  padding: 15px 20px;
+  padding: 10px 20px;
   border-radius: 50px;
   color: white;
 }
