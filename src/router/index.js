@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Main from '../views/Main.vue'
+import Leaderboard from '../views/Leaderboard.vue';
 
 const routes = [
   {
     path: '/',
     name: 'main',
     component: Main,
+  },
+  {
+    path: '/leaderboard',
+    name: 'leaderboard',
+    component: Leaderboard,
   }
 ]
 

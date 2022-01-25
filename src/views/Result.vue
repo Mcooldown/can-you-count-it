@@ -11,8 +11,7 @@
             <h1 class="c-text-yellow fw-bold">Time's Up</h1>
             <h5 class="text-white mt-4">
               Congratulations,
-              <span class="fw-bold c-text-blue">{{ score.username }}</span
-              >!
+              <span class="fw-bold c-text-blue">{{ score.username }}</span>
             </h5>
             <h5 class="mt-3 text-white">
               You've got
@@ -45,7 +44,7 @@
           title="LEADERBOARD"
           class="d-block w-100 my-3"
           icon="fas fa-trophy"
-          @click="handleLeaderboard"
+          @click="this.$router.push({ name: 'leaderboard' })"
         />
       </div>
     </div>
@@ -84,8 +83,6 @@ export default {
     const handlePlayAgain = (step) => {
       emit("playAgain", step);
     };
-
-    const handleLeaderboard = () => {};
 
     return {
       handlePlayAgain,

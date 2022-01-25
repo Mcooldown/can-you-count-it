@@ -82,9 +82,12 @@ export default {
     const answers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
     onMounted(() => {
-      fetch(`http://127.0.0.1:8000/api/levels/${props.levelId}`, {
-        method: "POST",
-      })
+      fetch(
+        `http://127.0.0.1:8000/api/get-level-by-id?level_id=${props.levelId}`,
+        {
+          method: "POST",
+        }
+      )
         .then((res) => {
           return res.json();
         })
@@ -160,7 +163,7 @@ export default {
       const correctAnswer =
         (firstNumber.value + secondNumber.value + thirdNumber.value) % 10;
       if (answer === correctAnswer) {
-        score.value += level.correct_score;
+        score.value += level.value.correct_score;
       } else {
         if (score.value > 0) {
           if (score.value - level.value.incorrect_score < 0) {
