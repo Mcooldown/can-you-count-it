@@ -12,14 +12,14 @@
         <Play
           v-else-if="step === 3"
           :name="name"
-          :level="level"
+          :levelId="levelId"
           @finished="handleResult"
           @goToLevel="goToStep"
         />
         <Result
           v-else-if="step === 4"
           :name="name"
-          :level="level"
+          :levelId="levelId"
           :score="score"
           @playAgain="goToStep"
         />
@@ -41,7 +41,7 @@ export default {
   setup() {
     const step = ref(1);
     const name = ref(null);
-    const level = ref(null);
+    const levelId = ref(null);
     const score = ref(0);
 
     const goToStep = (stepParam) => {
@@ -54,8 +54,8 @@ export default {
       }, 1000);
     };
 
-    const handlePlay = (levelParam) => {
-      level.value = levelParam;
+    const handlePlay = (levelIdParam) => {
+      levelId.value = levelIdParam;
       goToStep(3);
     };
 
@@ -76,7 +76,7 @@ export default {
       handleResult,
       score,
       handleSelectLevel,
-      level,
+      levelId,
       goToStep,
     };
   },

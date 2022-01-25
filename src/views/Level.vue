@@ -8,13 +8,13 @@
         icon="fas fa-home"
         @click="goToHome"
       />
-      <div class="row justify-content-center mt-4">
+      <div v-if="levels.length" class="row justify-content-center mt-4">
         <div
           class="col-md-6 my-3"
           v-for="(level, index) in levels"
           :key="level.id"
         >
-          <div class="c-level-box" @click="handleFinished(level)">
+          <div class="c-level-box" @click="handleFinished(level.id)">
             <div class="c-symbol-level">{{ index + 1 }}</div>
             <h4 class="fw-bold text-white my-3">
               {{ level.name }}
@@ -46,25 +46,43 @@
           </div>
         </div>
       </div>
+      <div v-else class="d-flex justify-content-center mt-4">
+        <div class="spinner-border c-text-yellow" role="status"></div>
+      </div>
     </div>
   </div>
   <Copyright />
 </template>
 
 <script>
-import levelData from "../data/levels.json";
 import Copyright from "../components/Copyright.vue";
 import Button from "../components/Button.vue";
+import { onMounted, ref } from "vue";
 
 export default {
   components: { Copyright, Button },
   props: ["name"],
   emits: ["finished", "goToHome"],
   setup(_, { emit }) {
-    const levels = levelData.levels;
+    const levels = ref([]);
 
-    const handleFinished = (level) => {
-      emit("finished", level);
+    onMounted(() => {
+      fetch("http://127.0.0.1:8000/api/levels", {
+        method: "POST",
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          levels.value = data.levels;
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    });
+
+    const handleFinished = (levelId) => {
+      emit("finished", levelId);
     };
 
     const goToHome = () => {
