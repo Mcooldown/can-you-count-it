@@ -1,0 +1,36 @@
+{
+     "levels": [
+          {
+               "id" : 1,
+               "name" : "Beginner",
+               "play_time" : 120,
+               "round_time" : 30,
+               "correct_score" : 2,
+               "incorrect_score" : 0
+          },
+          {
+               "id" : 2,
+               "name" : "Intermediate",
+               "play_time" : 120,
+               "round_time" : 20,
+               "correct_score" : 5,
+               "incorrect_score" : 2
+          },
+          {
+               "id" : 3,
+               "name" : "Advanced",
+               "play_time" : 150,
+               "round_time" : 15,
+               "correct_score" : 10,
+               "incorrect_score" : 5
+          },
+          {
+               "id" : 4,
+               "name" : "Expert",
+               "play_time" : 180,
+               "round_time" : 10,
+               "correct_score" : 15,
+               "incorrect_score" : 10
+          }
+     ]
+}

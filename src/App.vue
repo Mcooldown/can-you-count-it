@@ -15,4 +15,12 @@
 /* #nav a.router-link-exact-active {
   color: #42b983;
 } */
+
+.c-text-yellow {
+  color: #f6d55c !important;
+}
+
+.c-text-blue {
+  color: #50b1f5 !important;
+}
 </style>
