@@ -1,13 +1,8 @@
 <template>
   <div class="row justify-content-center">
     <div class="col-lg-8 col-md-10 col-11">
+      <Button class="mt-4" icon="fas fa-home" @click="goToHome" />
       <h1 class="fw-bold c-text-yellow mt-5">Select your Level</h1>
-      <Button
-        class="mt-4"
-        title="BACK TO HOME"
-        icon="fas fa-home"
-        @click="goToHome"
-      />
       <div v-if="levels.length" class="row justify-content-center mt-4">
         <div
           class="col-md-6 my-3"
@@ -46,8 +41,8 @@
           </div>
         </div>
       </div>
-      <div v-else class="d-flex justify-content-center mt-4">
-        <div class="spinner-border c-text-yellow" role="status"></div>
+      <div v-else class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-muted" role="status"></div>
       </div>
     </div>
   </div>
@@ -58,6 +53,7 @@
 import Copyright from "../components/Copyright.vue";
 import Button from "../components/Button.vue";
 import { onMounted, ref } from "vue";
+import postAPI from "../composables/postAPI";
 
 export default {
   components: { Copyright, Button },
@@ -65,20 +61,16 @@ export default {
   emits: ["finished", "goToHome"],
   setup(_, { emit }) {
     const levels = ref([]);
+    const { data, error, accessAPI } = postAPI();
 
     onMounted(() => {
-      fetch("http://127.0.0.1:8000/api/levels", {
-        method: "POST",
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          levels.value = data.levels;
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      accessAPI("levels").then(() => {
+        if (error.value) {
+          console.log(error.value);
+        } else {
+          levels.value = data.value.levels;
+        }
+      });
     });
 
     const handleFinished = (levelId) => {

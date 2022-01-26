@@ -22,18 +22,12 @@
             </h5>
           </div>
           <div v-else class="d-flex justify-content-center mt-4">
-            <div class="spinner-border c-text-yellow" role="status"></div>
+            <div class="spinner-border text-muted" role="status"></div>
           </div>
         </div>
       </div>
       <div class="col-12"></div>
       <div class="col-lg-2 col-md-4 col-10 mt-3" v-if="score">
-        <Button
-          title="PLAY AGAIN"
-          icon="fas fa-play"
-          @click="handlePlayAgain(2)"
-          class="d-block w-100 my-3"
-        />
         <Button
           title="HOME"
           class="d-block w-100 my-3"
@@ -54,6 +48,7 @@
 <script>
 import { onMounted, ref } from "vue";
 import Button from "../components/Button.vue";
+import postAPI from "../composables/postAPI.js";
 
 export default {
   components: { Button },
@@ -62,22 +57,17 @@ export default {
   setup(props, { emit }) {
     const score = ref(null);
 
+    const { data, error, accessAPI } = postAPI();
     onMounted(() => {
-      fetch(
-        `http://127.0.0.1:8000/api/store-score?username=${props.name}&level_id=${props.levelId}&score=${props.score}`,
-        {
-          method: "POST",
+      accessAPI(
+        `store-score?username=${props.name}&level_id=${props.levelId}&score=${props.score}`
+      ).then(() => {
+        if (error.value) {
+          console.log(error.value);
+        } else {
+          score.value = data.value.score;
         }
-      )
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          score.value = data.score;
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
+      });
     });
 
     const handlePlayAgain = (step) => {
@@ -86,7 +76,6 @@ export default {
 
     return {
       handlePlayAgain,
-      handleLeaderboard,
       score,
     };
   },

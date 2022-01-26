@@ -61,6 +61,7 @@
 import { onMounted, ref } from "vue";
 import Copyright from "../components/Copyright.vue";
 import Button from "../components/Button.vue";
+import postAPI from "../composables/postAPI";
 
 export default {
   components: { Copyright, Button },
@@ -81,26 +82,21 @@ export default {
     const roundTime = ref(0);
     const answers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
+    const { data, error, accessAPI } = postAPI();
+
     onMounted(() => {
-      fetch(
-        `http://127.0.0.1:8000/api/get-level-by-id?level_id=${props.levelId}`,
-        {
-          method: "POST",
-        }
-      )
-        .then((res) => {
-          return res.json();
-        })
-        .then((data) => {
-          level.value = data.level;
-          playTime.value = level.value.play_time;
-          roundTime.value = level.value.round_time;
+      accessAPI(`get-level-by-id?level_id=${props.levelId}`)
+        .then(() => {
+          if (error.value) {
+            console.log(error.value);
+          } else {
+            level.value = data.value.level;
+          }
         })
         .then(() => {
+          playTime.value = level.value.play_time;
+          roundTime.value = level.value.round_time;
           handleCountdown();
-        })
-        .catch((err) => {
-          console.log(err.message);
         });
     });
 
