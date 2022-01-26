@@ -1,6 +1,10 @@
 <template>
   <div class="text-end pt-3">
-    <Button title="LEADERBOARD" icon="fas fa-trophy" />
+    <Button
+      title="LEADERBOARD"
+      icon="fas fa-trophy"
+      @click="this.$router.push({ name: 'leaderboard' })"
+    />
   </div>
   <div class="c-home">
     <div class="row justify-content-center align-items-center">
@@ -39,7 +43,7 @@ export default {
   name: "Home",
   emits: ["finished"],
   components: { Button, Copyright },
-  setup(_, { emit }) {
+  setup(_, { emit, router }) {
     const name = ref("");
     const errorName = ref(null);
 

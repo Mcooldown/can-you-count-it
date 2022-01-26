@@ -1,5 +1,5 @@
 <template>
-  <div class="pt-3" v-if="countdownTime <= 0">
+  <div class="pt-3" v-if="level && isPlaying">
     <div class="text-end mb-5">
       <Button icon="fas fa-sign-out-alt" @click="goToLevel" />
     </div>
@@ -13,7 +13,7 @@
     </h5>
   </div>
   <div class="pt-3">
-    <div class="c-countdown-wrapper" v-if="countdownTime > 0">
+    <div class="c-countdown-wrapper" v-if="level && countdownTime > 0">
       <h5 class="text-white mb-5">
         Player Name: <span class="c-text-yellow fw-bold">{{ name }}</span>
         <br />
@@ -24,7 +24,7 @@
         {{ countdownTime }}
       </div>
     </div>
-    <div v-if="isPlaying">
+    <div v-if="level && isPlaying">
       <div class="d-flex justify-content-center align-items-center mt-4">
         <h1 class="c-number">{{ firstNumber }}</h1>
         <h1 class="mx-4">+</h1>
@@ -61,10 +61,11 @@
 import { onMounted, ref } from "vue";
 import Copyright from "../components/Copyright.vue";
 import Button from "../components/Button.vue";
+import postAPI from "../composables/postAPI";
 
 export default {
   components: { Copyright, Button },
-  props: ["name", "level"],
+  props: ["name", "levelId"],
   emits: ["finished", "goToLevel"],
   setup(props, { emit }) {
     const score = ref(0);
@@ -76,9 +77,28 @@ export default {
     const secondNumber = ref(0);
     const thirdNumber = ref(0);
     const timer = ref(null);
-    const playTime = ref(props.level.play_time);
-    const roundTime = ref(props.level.round_time);
+    const level = ref(null);
+    const playTime = ref(0);
+    const roundTime = ref(0);
     const answers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+
+    const { data, error, accessAPI } = postAPI();
+
+    onMounted(() => {
+      accessAPI(`get-level-by-id?level_id=${props.levelId}`)
+        .then(() => {
+          if (error.value) {
+            console.log(error.value);
+          } else {
+            level.value = data.value.level;
+          }
+        })
+        .then(() => {
+          playTime.value = level.value.play_time;
+          roundTime.value = level.value.round_time;
+          handleCountdown();
+        });
+    });
 
     const handleCountdown = () => {
       countdown.value = setInterval(() => {
@@ -93,6 +113,8 @@ export default {
     };
 
     const goToLevel = () => {
+      clearInterval(timer.value);
+      isPlaying.value = false;
       emit("goToLevel", 2);
     };
 
@@ -122,7 +144,7 @@ export default {
           }
           if (roundTime.value <= 0) {
             randomThirdNumber();
-            roundTime.value += props.level.round_time;
+            roundTime.value += level.value.round_time;
           }
           playTime.value--;
         }
@@ -137,22 +159,18 @@ export default {
       const correctAnswer =
         (firstNumber.value + secondNumber.value + thirdNumber.value) % 10;
       if (answer === correctAnswer) {
-        score.value += props.level.correct_score;
+        score.value += level.value.correct_score;
       } else {
         if (score.value > 0) {
-          if (score.value - props.level.incorrect_score < 0) {
+          if (score.value - level.value.incorrect_score < 0) {
             score.value = 0;
           } else {
-            score.value -= props.level.incorrect_score;
+            score.value -= level.value.incorrect_score;
           }
         }
       }
       randomPairNumber();
     };
-
-    onMounted(() => {
-      handleCountdown();
-    });
 
     return {
       score,
@@ -166,6 +184,7 @@ export default {
       handleClick,
       roundTime,
       goToLevel,
+      level,
     };
   },
 };

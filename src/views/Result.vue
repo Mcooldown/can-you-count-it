@@ -7,27 +7,27 @@
       <div class="col-12"></div>
       <div class="col-lg-6 col-md-8 col-11">
         <div class="c-result-box mt-4">
-          <h1 class="c-text-yellow fw-bold">Time's Up</h1>
-          <h5 class="text-white mt-4">
-            Congratulations, <span class="fw-bold c-text-blue">{{ name }}</span
-            >!
-          </h5>
-          <h5 class="mt-3 text-white">
-            You've got
-            <span class="fw-bold c-text-blue">{{ score }}</span> point(s) as
-            your total score on
-            <span class="fw-bold c-text-blue">{{ level.name }}</span> level.
-          </h5>
+          <div v-if="score">
+            <h1 class="c-text-yellow fw-bold">Time's Up</h1>
+            <h5 class="text-white mt-4">
+              Congratulations,
+              <span class="fw-bold c-text-blue">{{ score.username }}</span>
+            </h5>
+            <h5 class="mt-3 text-white">
+              You've got
+              <span class="fw-bold c-text-blue">{{ score.score }}</span>
+              point(s) as your total score on
+              <span class="fw-bold c-text-blue">{{ score.level.name }}</span>
+              level.
+            </h5>
+          </div>
+          <div v-else class="d-flex justify-content-center mt-4">
+            <div class="spinner-border text-muted" role="status"></div>
+          </div>
         </div>
       </div>
       <div class="col-12"></div>
-      <div class="col-lg-2 col-md-4 col-10 mt-3">
-        <Button
-          title="PLAY AGAIN"
-          icon="fas fa-play"
-          @click="handlePlayAgain(2)"
-          class="d-block w-100 my-3"
-        />
+      <div class="col-lg-2 col-md-4 col-10 mt-3" v-if="score">
         <Button
           title="HOME"
           class="d-block w-100 my-3"
@@ -38,7 +38,7 @@
           title="LEADERBOARD"
           class="d-block w-100 my-3"
           icon="fas fa-trophy"
-          @click="handleLeaderboard"
+          @click="this.$router.push({ name: 'leaderboard' })"
         />
       </div>
     </div>
@@ -46,22 +46,37 @@
 </template>
 
 <script>
+import { onMounted, ref } from "vue";
 import Button from "../components/Button.vue";
+import postAPI from "../composables/postAPI.js";
 
 export default {
   components: { Button },
   emits: ["playAgain"],
-  props: ["score", "name", "level"],
-  setup(_, { emit }) {
+  props: ["score", "name", "levelId"],
+  setup(props, { emit }) {
+    const score = ref(null);
+
+    const { data, error, accessAPI } = postAPI();
+    onMounted(() => {
+      accessAPI(
+        `store-score?username=${props.name}&level_id=${props.levelId}&score=${props.score}`
+      ).then(() => {
+        if (error.value) {
+          console.log(error.value);
+        } else {
+          score.value = data.value.score;
+        }
+      });
+    });
+
     const handlePlayAgain = (step) => {
       emit("playAgain", step);
     };
 
-    const handleLeaderboard = () => {};
-
     return {
       handlePlayAgain,
-      handleLeaderboard,
+      score,
     };
   },
 };

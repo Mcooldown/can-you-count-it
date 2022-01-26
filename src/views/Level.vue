@@ -1,20 +1,15 @@
 <template>
   <div class="row justify-content-center">
     <div class="col-lg-8 col-md-10 col-11">
+      <Button class="mt-4" icon="fas fa-home" @click="goToHome" />
       <h1 class="fw-bold c-text-yellow mt-5">Select your Level</h1>
-      <Button
-        class="mt-4"
-        title="BACK TO HOME"
-        icon="fas fa-home"
-        @click="goToHome"
-      />
-      <div class="row justify-content-center mt-4">
+      <div v-if="levels.length" class="row justify-content-center mt-4">
         <div
           class="col-md-6 my-3"
           v-for="(level, index) in levels"
           :key="level.id"
         >
-          <div class="c-level-box" @click="handleFinished(level)">
+          <div class="c-level-box" @click="handleFinished(level.id)">
             <div class="c-symbol-level">{{ index + 1 }}</div>
             <h4 class="fw-bold text-white my-3">
               {{ level.name }}
@@ -46,25 +41,40 @@
           </div>
         </div>
       </div>
+      <div v-else class="d-flex justify-content-center mt-5">
+        <div class="spinner-border text-muted" role="status"></div>
+      </div>
     </div>
   </div>
   <Copyright />
 </template>
 
 <script>
-import levelData from "../data/levels.json";
 import Copyright from "../components/Copyright.vue";
 import Button from "../components/Button.vue";
+import { onMounted, ref } from "vue";
+import postAPI from "../composables/postAPI";
 
 export default {
   components: { Copyright, Button },
   props: ["name"],
   emits: ["finished", "goToHome"],
   setup(_, { emit }) {
-    const levels = levelData.levels;
+    const levels = ref([]);
+    const { data, error, accessAPI } = postAPI();
 
-    const handleFinished = (level) => {
-      emit("finished", level);
+    onMounted(() => {
+      accessAPI("levels").then(() => {
+        if (error.value) {
+          console.log(error.value);
+        } else {
+          levels.value = data.value.levels;
+        }
+      });
+    });
+
+    const handleFinished = (levelId) => {
+      emit("finished", levelId);
     };
 
     const goToHome = () => {
