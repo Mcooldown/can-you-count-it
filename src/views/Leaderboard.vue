@@ -38,41 +38,19 @@
                   {{ selectedLevel.name }}
                 </h1>
               </div>
-              <div v-if="filteredScores.length">
-                <div
-                  v-for="(score, index) in filteredScores"
+              <div v-if="scores.length && !isLoading">
+                <LeaderboardBox
+                  v-for="(score, index) in scores"
                   :key="score.id"
-                  class="c-list-box d-flex p-3 mb-3"
-                >
-                  <h1 class="fw-bold c-text-blue">
-                    {{ index + 1 }}
-                  </h1>
-                  <div
-                    class="
-                      d-md-flex
-                      w-100
-                      align-items-center align-items-center
-                      justify-content-between
-                      ms-3
-                    "
-                  >
-                    <div class="text-start">
-                      <h5 class="text-white m-0">
-                        {{ score.username }}
-                      </h5>
-                      <small class="text-muted">
-                        {{ score.user ? "User" : "Non-user" }}
-                      </small>
-                    </div>
-                    <h2 class="c-text-yellow fw-bold text-end my-2">
-                      <span class="h6 text-muted">Score:&nbsp;&nbsp;</span
-                      >{{ score.score }}
-                    </h2>
-                  </div>
-                </div>
+                  :score="score"
+                  :index="index"
+                />
               </div>
-              <div v-else>
+              <div v-else-if="!isLoading && scores.length <= 0">
                 <p class="text-muted">No data available.</p>
+              </div>
+              <div v-else class="d-flex justify-content-center mt-5">
+                <div class="spinner-border text-muted" role="status"></div>
               </div>
             </div>
             <div v-else class="d-flex justify-content-center mt-5">
@@ -87,45 +65,69 @@
 </template>
 
 <script>
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import postAPI from "../composables/postAPI.js";
 import Button from "../components/Button.vue";
 import Copyright from "../components/Copyright.vue";
+import LeaderboardBox from "../components/LeaderboardBox.vue";
 
 export default {
-  components: { Button, Copyright },
+  components: { Button, Copyright, LeaderboardBox },
   setup() {
     const levels = ref([]);
     const scores = ref([]);
     const levelId = ref(1);
+    const isLoading = ref(true);
+    const selectedLevel = ref(null);
 
-    const { data, error, accessAPI } = postAPI();
+    const {
+      data: dataLevel,
+      error: errorLevel,
+      accessAPI: accessAPILevel,
+    } = postAPI();
+    const {
+      data: dataScores,
+      error: errorScores,
+      accessAPI: accessAPIScores,
+    } = postAPI();
+
+    const getScores = () => {
+      selectedLevel.value = levels.value.find(
+        (level) => level.id === levelId.value
+      );
+
+      accessAPIScores(`get-scores-by-level-id?level_id=${levelId.value}`).then(
+        () => {
+          if (errorScores.value) {
+            console.log(errorLevel.value);
+          } else {
+            scores.value = dataScores.value.scores;
+          }
+          isLoading.value = false;
+        }
+      );
+    };
 
     onMounted(() => {
-      accessAPI(`get-all-level-with-scores`).then(() => {
-        if (error.value) {
-          console.log(error.value);
-        } else {
-          levels.value = data.value.levels;
-          scores.value = data.value.scores;
-        }
-      });
-    });
-
-    const filteredScores = computed(() => {
-      return scores.value
-        .filter((score) => score.level_id === levelId.value)
-        .sort(function (a, b) {
-          return b.score - a.score;
+      accessAPILevel(`levels`)
+        .then(() => {
+          if (errorLevel.value) {
+            console.log(errorLevel.value);
+          } else {
+            levels.value = dataLevel.value.levels;
+          }
         })
-        .slice(0, 50);
+        .then(() => {
+          getScores();
+        });
     });
 
-    const selectedLevel = computed(() => {
-      return levels.value.find((level) => level.id === levelId.value);
+    watch(levelId, () => {
+      isLoading.value = true;
+      getScores();
     });
 
-    return { levels, filteredScores, levelId, selectedLevel };
+    return { levels, levelId, scores, selectedLevel, isLoading };
   },
 };
 </script>

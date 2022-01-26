@@ -10,9 +10,10 @@
           <div v-if="score">
             <h1 class="c-text-yellow fw-bold">Time's Up</h1>
             <h5 class="text-white mt-4">
-              Congratulations,
-              <span class="fw-bold c-text-blue">{{ score.username }}</span>
+              Congratulations<br />
+              <span class="fw-bold c-text-blue">{{ name }}</span>
             </h5>
+            <p class="text-muted">ID: {{ userId }}</p>
             <h5 class="mt-3 text-white">
               You've got
               <span class="fw-bold c-text-blue">{{ score.score }}</span>
@@ -56,6 +57,7 @@ export default {
   props: ["score", "name", "levelId"],
   setup(props, { emit }) {
     const score = ref(null);
+    const userId = ref(null);
 
     const { data, error, accessAPI } = postAPI();
     onMounted(() => {
@@ -66,6 +68,8 @@ export default {
           console.log(error.value);
         } else {
           score.value = data.value.score;
+          const usernameArray = score.value.username.split("-");
+          userId.value = usernameArray[1].trim();
         }
       });
     });
@@ -77,6 +81,7 @@ export default {
     return {
       handlePlayAgain,
       score,
+      userId,
     };
   },
 };
