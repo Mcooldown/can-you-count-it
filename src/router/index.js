@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Main from '../views/Main.vue'
 import Leaderboard from '../views/Leaderboard.vue';
+import HowToPlay from "../views/HowToPlay.vue";
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/leaderboard',
     name: 'leaderboard',
     component: Leaderboard,
+  },
+  {
+    path: '/howtoplay',
+    name: 'howtoplay',
+    component: HowToPlay,
   }
 ]
 

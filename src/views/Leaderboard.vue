@@ -57,7 +57,9 @@
                     "
                   >
                     <div class="text-start">
-                      <h5 class="text-white m-0">{{ score.username }}</h5>
+                      <h5 class="text-white m-0">
+                        {{ score.username }}
+                      </h5>
                       <small class="text-muted">
                         {{ score.user ? "User" : "Non-user" }}
                       </small>
@@ -78,6 +80,7 @@
             </div>
           </div>
         </div>
+        <Copyright />
       </div>
     </div>
   </div>
@@ -87,9 +90,10 @@
 import { computed, onMounted, ref } from "vue";
 import postAPI from "../composables/postAPI.js";
 import Button from "../components/Button.vue";
+import Copyright from "../components/Copyright.vue";
 
 export default {
-  components: { Button },
+  components: { Button, Copyright },
   setup() {
     const levels = ref([]);
     const scores = ref([]);

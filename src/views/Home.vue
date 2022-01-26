@@ -26,7 +26,12 @@
           <div class="d-flex justify-content-center mt-4">
             <Button type="submit" title="PLAY" icon="fas fa-play" />
           </div>
-          <h6 class="c-how-to-play mt-4">How to Play?</h6>
+          <h6
+            class="c-how-to-play mt-4"
+            @click="this.$router.push({ name: 'howtoplay' })"
+          >
+            How to Play?
+          </h6>
         </form>
       </div>
     </div>
@@ -43,7 +48,7 @@ export default {
   name: "Home",
   emits: ["finished"],
   components: { Button, Copyright },
-  setup(_, { emit, router }) {
+  setup(_, { emit }) {
     const name = ref("");
     const errorName = ref(null);
 
@@ -54,6 +59,8 @@ export default {
     const handleSubmit = () => {
       if (name.value === "") {
         errorName.value = "Name must be filled";
+      } else if (name.value.length > 15) {
+        errorName.value = "Name must not greater than 15 characters";
       } else {
         emit("finished", name.value);
       }
