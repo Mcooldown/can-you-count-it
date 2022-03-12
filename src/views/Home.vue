@@ -3,7 +3,7 @@
     <Button
       title="LEADERBOARD"
       icon="fas fa-trophy"
-      @click="this.$router.push({ name: 'leaderboard' })"
+      @click="this.$router.push({ name: 'Leaderboard' })"
     />
   </div>
   <div class="c-home">
@@ -28,7 +28,7 @@
           </div>
           <h6
             class="c-how-to-play mt-4"
-            @click="this.$router.push({ name: 'howtoplay' })"
+            @click="this.$router.push({ name: 'How To Play' })"
           >
             How to Play?
           </h6>

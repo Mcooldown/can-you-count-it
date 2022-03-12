@@ -6,17 +6,17 @@ import HowToPlay from "../views/HowToPlay.vue";
 const routes = [
   {
     path: '/',
-    name: 'main',
+    name: "Home",
     component: Main,
   },
   {
     path: '/leaderboard',
-    name: 'leaderboard',
+    name: 'Leaderboard',
     component: Leaderboard,
   },
   {
     path: '/howtoplay',
-    name: 'howtoplay',
+    name: 'How To Play',
     component: HowToPlay,
   }
 ]
@@ -24,6 +24,11 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  document.title = `${to.name} - ${ process.env.VUE_APP_TITLE }`
+  next()
 })
 
 export default router

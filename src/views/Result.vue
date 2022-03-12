@@ -39,7 +39,7 @@
           title="LEADERBOARD"
           class="d-block w-100 my-3"
           icon="fas fa-trophy"
-          @click="this.$router.push({ name: 'leaderboard' })"
+          @click="this.$router.push({ name: 'Leaderboard' })"
         />
       </div>
     </div>

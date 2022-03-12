@@ -7,7 +7,7 @@
             <Button
               class="mt-4"
               icon="fas fa-home"
-              @click="this.$router.push({ name: 'main' })"
+              @click="this.$router.push({ name: 'Home' })"
             />
             <h1 class="fw-bold c-text-yellow mt-5">How To Play</h1>
             <img
