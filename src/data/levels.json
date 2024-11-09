@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Easy",
+    "play_time": 60,
+    "round_time": 15,
+    "correct_score": 100,
+    "incorrect_score": 0
+  },
+  {
+    "id": 2,
+    "name": "Medium",
+    "play_time": 60,
+    "round_time": 12,
+    "correct_score": 120,
+    "incorrect_score": 40
+  },
+  {
+    "id": 3,
+    "name": "Hard",
+    "play_time": 60,
+    "round_time": 10,
+    "correct_score": 150,
+    "incorrect_score": 60
+  },
+  {
+    "id": 4,
+    "name": "Very Hard",
+    "play_time": 60,
+    "round_time": 8,
+    "correct_score": 180,
+    "incorrect_score": 80
+  },
+  {
+    "id": 5,
+    "name": "Expert",
+    "play_time": 90,
+    "round_time": 6,
+    "correct_score": 200,
+    "incorrect_score": 100
+  },
+  {
+    "id": 6,
+    "name": "Master",
+    "play_time": 90,
+    "round_time": 3,
+    "correct_score": 250,
+    "incorrect_score": 150
+  }
+]

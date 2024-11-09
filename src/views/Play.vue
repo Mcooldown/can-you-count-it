@@ -15,8 +15,8 @@
   <div class="pt-3">
     <div class="c-countdown-wrapper" v-if="level && countdownTime > 0">
       <h5 class="text-white mb-5">
-        Player Name: <span class="c-text-yellow fw-bold">{{ name }}</span>
-        <br />
+        <!-- Player Name: <span class="c-text-yellow fw-bold">{{ name }}</span> -->
+        <!-- <br /> -->
         Level: <span class="c-text-yellow fw-bold">{{ level.name }}</span>
       </h5>
       <p class="text-white fw-bold mb-4">Game will start in</p>
@@ -61,7 +61,8 @@
 import { onMounted, ref } from "vue";
 import Copyright from "../components/Copyright.vue";
 import Button from "../components/Button.vue";
-import postAPI from "../composables/postAPI";
+// import postAPI from "../composables/postAPI";
+import levels from '../data/levels.json'
 
 export default {
   components: { Copyright, Button },
@@ -82,22 +83,31 @@ export default {
     const roundTime = ref(0);
     const answers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
-    const { data, error, accessAPI } = postAPI();
+    // const { data, error, accessAPI } = postAPI();
 
     onMounted(() => {
-      accessAPI(`get-level-by-id?level_id=${props.levelId}`)
-        .then(() => {
-          if (error.value) {
-            console.log(error.value);
-          } else {
-            level.value = data.value.level;
-          }
-        })
-        .then(() => {
-          playTime.value = level.value.play_time;
-          roundTime.value = level.value.round_time;
-          handleCountdown();
-        });
+      // accessAPI(`get-level-by-id?level_id=${props.levelId}`)
+      //   .then(() => {
+      //     if (error.value) {
+      //       console.log(error.value);
+      //     } else {
+      //       level.value = data.value.level;
+      //     }
+      //   })
+      //   .then(() => {
+      //     playTime.value = level.value.play_time;
+      //     roundTime.value = level.value.round_time;
+      //     handleCountdown();
+      //   });
+      const selectedLevel = levels.find(level => level.id === props.levelId)
+      if (!selectedLevel) {
+        goToLevel()
+        return
+      }
+      level.value = selectedLevel
+      playTime.value = level.value.play_time
+      roundTime.value = level.value.round_time
+      handleCountdown()
     });
 
     const handleCountdown = () => {

@@ -13,7 +13,7 @@
               Congratulations<br />
               <span class="fw-bold c-text-blue">{{ name }}</span>
             </h5>
-            <p class="text-muted">ID: {{ userId }}</p>
+            <!-- <p class="text-muted">ID: {{ userId }}</p> -->
             <h5 class="mt-3 text-white">
               You've got
               <span class="fw-bold c-text-blue">{{ score.score }}</span>
@@ -35,12 +35,12 @@
           icon="fa fa-home"
           @click="handlePlayAgain(1)"
         />
-        <Button
+        <!-- <Button
           title="LEADERBOARD"
           class="d-block w-100 my-3"
           icon="fas fa-trophy"
           @click="this.$router.push({ name: 'Leaderboard' })"
-        />
+        /> -->
       </div>
     </div>
   </div>
@@ -49,7 +49,8 @@
 <script>
 import { onMounted, ref } from "vue";
 import Button from "../components/Button.vue";
-import postAPI from "../composables/postAPI.js";
+// import postAPI from "../composables/postAPI.js";
+import levels from '../data/levels.json'
 
 export default {
   components: { Button },
@@ -57,21 +58,30 @@ export default {
   props: ["score", "name", "levelId"],
   setup(props, { emit }) {
     const score = ref(null);
-    const userId = ref(null);
+    // const userId = ref(null);
 
-    const { data, error, accessAPI } = postAPI();
+    // const { data, error, accessAPI } = postAPI();
     onMounted(() => {
-      accessAPI(
-        `store-score?username=${props.name}&level_id=${props.levelId}&score=${props.score}`
-      ).then(() => {
-        if (error.value) {
-          console.log(error.value);
-        } else {
-          score.value = data.value.score;
-          const usernameArray = score.value.username.split("-");
-          userId.value = usernameArray[1].trim();
-        }
-      });
+      // accessAPI(
+      //   `store-score?username=${props.name}&level_id=${props.levelId}&score=${props.score}`
+      // ).then(() => {
+      //   if (error.value) {
+      //     console.log(error.value);
+      //   } else {
+      //     score.value = data.value.score;
+      //     const usernameArray = score.value.username.split("-");
+      //     userId.value = usernameArray[1].trim();
+      //   }
+      // });
+      const level = levels.find(level => level.id === props.levelId)
+      if (!level) {
+        handlePlayAgain(2)
+        return
+      }
+      score.value = {
+        score: props.score,
+        level
+      };
     });
 
     const handlePlayAgain = (step) => {
@@ -81,7 +91,7 @@ export default {
     return {
       handlePlayAgain,
       score,
-      userId,
+      // userId,
     };
   },
 };

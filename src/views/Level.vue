@@ -52,26 +52,27 @@
 <script>
 import Copyright from "../components/Copyright.vue";
 import Button from "../components/Button.vue";
-import { onMounted, ref } from "vue";
-import postAPI from "../composables/postAPI";
+// import { onMounted, ref } from "vue";
+// import postAPI from "../composables/postAPI";
+import levels from '../data/levels.json'
 
 export default {
   components: { Copyright, Button },
   props: ["name"],
   emits: ["finished", "goToHome"],
   setup(_, { emit }) {
-    const levels = ref([]);
-    const { data, error, accessAPI } = postAPI();
+    // const levels = ref([]);
+    // const { data, error, accessAPI } = postAPI();
 
-    onMounted(() => {
-      accessAPI("levels").then(() => {
-        if (error.value) {
-          console.log(error.value);
-        } else {
-          levels.value = data.value.levels;
-        }
-      });
-    });
+    // onMounted(() => {
+    //   accessAPI("levels").then(() => {
+    //     if (error.value) {
+    //       console.log(error.value);
+    //     } else {
+    //       levels.value = data.value.levels;
+    //     }
+    //   });
+    // });
 
     const handleFinished = (levelId) => {
       emit("finished", levelId);
@@ -81,7 +82,11 @@ export default {
       emit("goToHome", 1);
     };
 
-    return { levels, handleFinished, goToHome };
+    return {
+      levels,
+      handleFinished,
+      goToHome
+    };
   },
 };
 </script>

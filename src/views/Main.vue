@@ -3,22 +3,22 @@
     <div class="c-background" id="background">
       <div class="container-fluid">
         <Home v-if="step === 1" @finished="handleSelectLevel" />
+        <!-- :name="name" -->
         <Level
           v-else-if="step === 2"
-          :name="name"
           @finished="handlePlay"
           @goToHome="goToStep"
         />
+        <!-- :name="name" -->
         <Play
           v-else-if="step === 3"
-          :name="name"
           :levelId="levelId"
           @finished="handleResult"
           @goToLevel="goToStep"
         />
+        <!-- :name="name" -->
         <Result
           v-else-if="step === 4"
-          :name="name"
           :levelId="levelId"
           :score="score"
           @playAgain="goToStep"
@@ -40,7 +40,7 @@ export default {
   components: { Home, Level, Play, Result },
   setup() {
     const step = ref(1);
-    const name = ref(null);
+    // const name = ref(null);
     const levelId = ref(null);
     const score = ref(0);
 
@@ -65,13 +65,13 @@ export default {
     };
 
     const handleSelectLevel = (nameParam) => {
-      name.value = nameParam;
+      // name.value = nameParam;
       goToStep(2);
     };
 
     return {
       step,
-      name,
+      // name,
       handlePlay,
       handleResult,
       score,
